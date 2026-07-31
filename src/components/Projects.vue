@@ -170,7 +170,7 @@ const setImage = (project, index) => {
               :src="project.images[project.currentImageIndex].url" 
               :alt="project.images[project.currentImageIndex].caption"
               class="carousel-image"
-              @error="(e) => e.target.src = 'https://via.placeholder.com/600x350/1e293b/38bdf8?text=' + encodeURIComponent(project.title)" 
+
             />
             <span class="carousel-caption">
               {{ project.images[project.currentImageIndex].caption }}
