@@ -110,7 +110,7 @@ const socialLinks = [
           </a>
           <!-- Bouton Télécharger le CV -->
             <a 
-                href="/public/projects/CV Espérencia.pdf" 
+                href="/projects/CV Espérencia.pdf" 
                 download="CV_Espérencian.pdf" 
                 class="btn btn-primary"
             >

@@ -17,8 +17,8 @@ const projects = ref([
     github: null,
     currentImageIndex: 0,
     images: [
-      { url: '/public/projects/R1.png', caption: 'Topologie Réseau sous GNS3' },
-      { url: '/public/projects/R2.png', caption: 'Tests de ping & Wireshark' }
+      { url: '/projects/R1.png', caption: 'Topologie Réseau sous GNS3' },
+      { url: '/projects/R2.png', caption: 'Tests de ping & Wireshark' }
     ]
   },
   {
@@ -31,9 +31,9 @@ const projects = ref([
     github: null,
     currentImageIndex: 0,
     images: [
-      { url: '/public/projects/T1.png', caption: 'Connexion à distance par teamViewer' },
-      { url: '/public/projects/T2.png', caption: 'Connexion à distance par teamViewer' },
-      { url: '/public/projects/T3.png', caption: 'Console de maintenance Windows' }
+      { url: '/projects/T1.png', caption: 'Connexion à distance par teamViewer' },
+      { url: '/projects/T2.png', caption: 'Connexion à distance par teamViewer' },
+      { url: '/projects/T3.png', caption: 'Console de maintenance Windows' }
     ]
   },
   {
@@ -46,7 +46,7 @@ const projects = ref([
     github: null,
     currentImageIndex: 0,
     images: [
-      { url: '/public/projects/c1.png', caption: 'Infrastructure sous VMware Workstation' }
+      { url: '/projects/c1.png', caption: 'Infrastructure sous VMware Workstation' }
   
     ]
   },
@@ -60,10 +60,10 @@ const projects = ref([
     github: null,
     currentImageIndex: 0,
     images: [
-      { url: '/public/projects/M1.jpeg', caption: 'Dashboard principal du cabinet' },
-      { url: '/public/projects/M2.jpeg', caption: 'Bilan de préstation' },
-      { url: '/public/projects/M3.jpeg', caption: 'Listes des medecins' },
-      { url: '/public/projects/M4.jpeg' }
+      { url: '/projects/M1.jpeg', caption: 'Dashboard principal du cabinet' },
+      { url: '/projects/M2.jpeg', caption: 'Bilan de préstation' },
+      { url: '/projects/M3.jpeg', caption: 'Listes des medecins' },
+      { url: '/projects/M4.jpeg' }
     ]
   },
   {
@@ -76,13 +76,13 @@ const projects = ref([
     github: null,
     currentImageIndex: 0,
     images: [
-      { url: '/public/projects/gv1.png', caption: 'Login' },
-      { url: '/public/projects/gv2.png', caption: 'Accueil' },
-      { url: '/public/projects/gv3.png', caption: 'Gestion des clients' },
-      { url: '/public/projects/gv4.png', caption: 'Gestion des voitures' },
-      { url: '/public/projects/gv5.png', caption: 'Gestion des achats' },
-      { url: '/public/projects/gv6.png', caption: 'Interface de facturation' },
-      { url: '/public/projects/gv7.png', caption: 'Interface de facturation PHP/MySQL' }
+      { url: '/projects/gv1.png', caption: 'Login' },
+      { url: '/projects/gv2.png', caption: 'Accueil' },
+      { url: '/projects/gv3.png', caption: 'Gestion des clients' },
+      { url: '/projects/gv4.png', caption: 'Gestion des voitures' },
+      { url: '/projects/gv5.png', caption: 'Gestion des achats' },
+      { url: '/projects/gv6.png', caption: 'Interface de facturation' },
+      { url: '/projects/gv7.png', caption: 'Interface de facturation PHP/MySQL' }
     ]
   },
   {
@@ -95,9 +95,9 @@ const projects = ref([
     github: null,
     currentImageIndex: 0,
     images: [
-      { url: '/public/projects/A3.jpeg', caption: 'Login' },
-      { url: '/public/projects/A1.jpeg', caption: 'Demandes de rendez-vouz sur le côté avocats' },
-      { url: '/public/projects/A2.jpeg', caption: 'Gestion des fiches clients' }  
+      { url: '/projects/A3.jpeg', caption: 'Login' },
+      { url: '/projects/A1.jpeg', caption: 'Demandes de rendez-vouz sur le côté avocats' },
+      { url: '/projects/A2.jpeg', caption: 'Gestion des fiches clients' }  
     ]
   },
 ])
