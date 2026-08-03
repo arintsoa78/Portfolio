@@ -62,7 +62,6 @@ const currentYear = new Date().getFullYear()
     <footer class="footer">
       <div class="footer-content">
         <p>&copy; {{ currentYear }} HARIMANANTSOA Tsiresy Espérencia — Tous droits réservés.</p>
-        <p class="tagline">Conçu avec <i class="fa-solid fa-heart heart-icon"></i> en Vue.js</p>
       </div>
     </footer>
 
