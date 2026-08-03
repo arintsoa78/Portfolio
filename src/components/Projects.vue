@@ -170,7 +170,6 @@ const setImage = (project, index) => {
               :src="project.images[project.currentImageIndex].url" 
               :alt="project.images[project.currentImageIndex].caption"
               class="carousel-image"
-
             />
             <span class="carousel-caption">
               {{ project.images[project.currentImageIndex].caption }}
