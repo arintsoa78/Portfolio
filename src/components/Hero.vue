@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 
 const personalInfo = {
   name: 'HARIMANANTSOA Tsiresy Espérencia',
@@ -18,6 +18,7 @@ const personalInfo = {
 const currentSubtitleIndex = ref(0)
 const currentText = ref('')
 const isDeleting = ref(false)
+let timer = null
 
 const typeEffect = () => {
   const fullText = personalInfo.subtitles[currentSubtitleIndex.value]
@@ -39,11 +40,15 @@ const typeEffect = () => {
     typeSpeed = 500
   }
 
-  setTimeout(typeEffect, typeSpeed)
+  timer = setTimeout(typeEffect, typeSpeed)
 }
 
 onMounted(() => {
   typeEffect()
+})
+
+onUnmounted(() => {
+  if (timer) clearTimeout(timer)
 })
 
 const stats = [
@@ -109,14 +114,14 @@ const socialLinks = [
             <i class="fa-solid fa-paper-plane"></i>
           </a>
           <!-- Bouton Télécharger le CV -->
-            <a 
-                href="/projects/CV_Esperencia.pdf" 
-                download="CV_Esperencian.pdf" 
-                class="btn btn-primary"
-            >
-                <span>Télécharger CV</span>
-                <i class="fa-solid fa-download"></i>
-            </a>
+          <a 
+            href="/CV_Esperencia.pdf" 
+            download="CV_Esperencia.pdf" 
+            class="btn btn-primary"
+          >
+            <span>Télécharger CV</span>
+            <i class="fa-solid fa-download"></i>
+          </a>
         </div>
 
         <!-- Liens sociaux -->
