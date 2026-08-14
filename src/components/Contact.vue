@@ -67,7 +67,7 @@ const contactInfo = [
 
 const socialLinks = [
   { icon: 'fa-brands fa-linkedin-in', href: 'https://linkedin.com', label: 'LinkedIn' },
-  { icon: 'fa-brands fa-github', href: 'https://github.com', label: 'GitHub' }
+  { icon: 'fa-brands fa-github', href: 'https://github.com/arintsoa78', label: 'GitHub' }
 ]
 </script>
 
