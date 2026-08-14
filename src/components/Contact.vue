@@ -10,20 +10,38 @@ const formData = ref({
 
 const isSubmitting = ref(false)
 const showSuccessMessage = ref(false)
+const showErrorMessage = ref(false)
 
-const handleSubmit = () => {
+const handleSubmit = async () => {
   isSubmitting.value = true
-  
-  // Simulation d'envoi de message
-  setTimeout(() => {
+  showSuccessMessage.value = false
+  showErrorMessage.value = false
+
+  try {
+    const response = await fetch('https://formspree.io/f/xzepvqzo', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify(formData.value)
+    })
+
+    if (response.ok) {
+      showSuccessMessage.value = true
+      formData.value = { name: '', email: '', subject: '', message: '' }
+      
+      setTimeout(() => {
+        showSuccessMessage.value = false
+      }, 6000)
+    } else {
+      showErrorMessage.value = true
+    }
+  } catch (error) {
+    showErrorMessage.value = true
+  } finally {
     isSubmitting.value = false
-    showSuccessMessage.value = true
-    formData.value = { name: '', email: '', subject: '', message: '' }
-    
-    setTimeout(() => {
-      showSuccessMessage.value = false
-    }, 5000)
-  }, 1000)
+  }
 }
 
 const contactInfo = [
@@ -54,7 +72,6 @@ const socialLinks = [
 </script>
 
 <template>
-  <!-- AJOUT DE L'ID "contact" ICI pour permettre au menu de défiler jusqu'à cette section -->
   <section class="contact-section" id="contact">
     <!-- En-tête de section -->
     <div class="section-title">
@@ -113,6 +130,7 @@ const socialLinks = [
             <input 
               type="text" 
               id="name" 
+              name="name"
               v-model="formData.name" 
               placeholder="Votre nom" 
               required 
@@ -124,6 +142,7 @@ const socialLinks = [
             <input 
               type="email" 
               id="email" 
+              name="email"
               v-model="formData.email" 
               placeholder="votre.email@example.com" 
               required 
@@ -135,6 +154,7 @@ const socialLinks = [
             <input 
               type="text" 
               id="subject" 
+              name="subject"
               v-model="formData.subject" 
               placeholder="Objet de votre message" 
               required 
@@ -145,6 +165,7 @@ const socialLinks = [
             <label for="message">Message</label>
             <textarea 
               id="message" 
+              name="message"
               v-model="formData.message" 
               rows="5" 
               placeholder="Votre message ici..." 
@@ -161,11 +182,18 @@ const socialLinks = [
             </span>
           </button>
 
-          <!-- Notification de succès -->
+          <!-- Notifications -->
           <transition name="fade">
             <div v-if="showSuccessMessage" class="success-alert">
               <i class="fa-solid fa-circle-check"></i>
               <span>Merci ! Votre message a été envoyé avec succès.</span>
+            </div>
+          </transition>
+
+          <transition name="fade">
+            <div v-if="showErrorMessage" class="error-alert">
+              <i class="fa-solid fa-triangle-exclamation"></i>
+              <span>Une erreur s'est produite lors de l'envoi. Veuillez réespayer.</span>
             </div>
           </transition>
         </form>
@@ -394,13 +422,26 @@ const socialLinks = [
   cursor: not-allowed;
 }
 
-/* Alerte Succès */
+/* Alertes */
 .success-alert {
   margin-top: 20px;
   padding: 12px 16px;
   background-color: rgba(34, 197, 94, 0.15);
   border: 1px solid rgba(34, 197, 94, 0.4);
   color: #4ade80;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.9rem;
+}
+
+.error-alert {
+  margin-top: 20px;
+  padding: 12px 16px;
+  background-color: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  color: #f87171;
   border-radius: 10px;
   display: flex;
   align-items: center;
