@@ -54,7 +54,7 @@ const stats = [
 
 const socialLinks = [
   { icon: 'fa-brands fa-linkedin-in', href: 'https://linkedin.com', label: 'LinkedIn' },
-  { icon: 'fa-brands fa-github', href: 'https://github.com', label: 'GitHub' }
+  { icon: 'fa-brands fa-github', href: 'https://github.com/arintsoa78', label: 'GitHub' }
 ]
 </script>
 
@@ -110,8 +110,8 @@ const socialLinks = [
           </a>
           <!-- Bouton Télécharger le CV -->
             <a 
-                href="/projects/CV Espérencia.pdf" 
-                download="CV_Espérencian.pdf" 
+                href="/projects/CV_Esperencia.pdf" 
+                download="CV_Esperencian.pdf" 
                 class="btn btn-primary"
             >
                 <span>Télécharger CV</span>
