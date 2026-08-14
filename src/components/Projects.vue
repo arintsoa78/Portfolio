@@ -1,11 +1,9 @@
 <script setup>
 import { ref, computed } from 'vue'
 
-// Catégories de filtres
 const categories = ['Tous', 'Réseaux & Systèmes', 'Développement Web', 'Applications']
 const activeCategory = ref('Tous')
 
-// Projets basés sur ton CV avec carrousel d'images
 const projects = ref([
   {
     id: 1,
@@ -31,8 +29,8 @@ const projects = ref([
     github: null,
     currentImageIndex: 0,
     images: [
-      { url: '/projects/T1.png', caption: 'Connexion à distance par teamViewer' },
-      { url: '/projects/T2.png', caption: 'Connexion à distance par teamViewer' },
+      { url: '/projects/T1.png', caption: 'Connexion à distance par TeamViewer' },
+      { url: '/projects/T2.png', caption: 'Connexion à distance par TeamViewer' },
       { url: '/projects/T3.png', caption: 'Console de maintenance Windows' }
     ]
   },
@@ -47,7 +45,6 @@ const projects = ref([
     currentImageIndex: 0,
     images: [
       { url: '/projects/c1.png', caption: 'Infrastructure sous VMware Workstation' }
-  
     ]
   },
   {
@@ -61,9 +58,9 @@ const projects = ref([
     currentImageIndex: 0,
     images: [
       { url: '/projects/M1.jpeg', caption: 'Dashboard principal du cabinet' },
-      { url: '/projects/M2.jpeg', caption: 'Bilan de préstation' },
-      { url: '/projects/M3.jpeg', caption: 'Listes des medecins' },
-      { url: '/projects/M4.jpeg' }
+      { url: '/projects/M2.jpeg', caption: 'Bilan de prestation' },
+      { url: '/projects/M3.jpeg', caption: 'Liste des médecins' },
+      { url: '/projects/M4.jpeg', caption: 'Aperçu de l\'application' }
     ]
   },
   {
@@ -96,13 +93,12 @@ const projects = ref([
     currentImageIndex: 0,
     images: [
       { url: '/projects/A3.jpeg', caption: 'Login' },
-      { url: '/projects/A1.jpeg', caption: 'Demandes de rendez-vouz sur le côté avocats' },
-      { url: '/projects/A2.jpeg', caption: 'Gestion des fiches clients' }  
+      { url: '/projects/A1.jpeg', caption: 'Demandes de rendez-vous côté avocat' },
+      { url: '/projects/A2.jpeg', caption: 'Gestion des fiches clients' }
     ]
-  },
+  }
 ])
 
-// Filtrage dynamique
 const filteredProjects = computed(() => {
   if (activeCategory.value === 'Tous') {
     return projects.value
@@ -110,31 +106,33 @@ const filteredProjects = computed(() => {
   return projects.value.filter(p => p.category === activeCategory.value)
 })
 
-// Navigation dans le carrousel
+// Navigation du carrousel
 const nextImage = (project) => {
-  if (project.currentImageIndex < project.images.length - 1) {
-    project.currentImageIndex++
-  } else {
-    project.currentImageIndex = 0
-  }
+  const total = project.images.length
+  project.currentImageIndex = (project.currentImageIndex + 1) % total
 }
 
 const prevImage = (project) => {
-  if (project.currentImageIndex > 0) {
-    project.currentImageIndex--
-  } else {
-    project.currentImageIndex = project.images.length - 1
-  }
+  const total = project.images.length
+  project.currentImageIndex = (project.currentImageIndex - 1 + total) % total
 }
 
 const setImage = (project, index) => {
   project.currentImageIndex = index
 }
+
+// Helper corrigé pour formater proprement le chemin public
+const getImageUrl = (path) => {
+  if (!path) return ''
+  const baseUrl = import.meta.env.BASE_URL || '/'
+  const cleanBase = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`
+  const cleanPath = path.startsWith('/') ? path.slice(1) : path
+  return `${cleanBase}${cleanPath}`
+}
 </script>
 
 <template>
   <section class="projects-section" id="projects">
-    <!-- En-tête -->
     <div class="section-title">
       <h2>Projets <span>Académiques</span></h2>
       <div class="underline"></div>
@@ -164,35 +162,35 @@ const setImage = (project, index) => {
         class="project-card"
       >
         <!-- CARROUSEL D'IMAGES -->
-        <div class="carousel-container">
+        <div class="carousel-container" v-if="project.images && project.images.length > 0">
           <div class="carousel-slide">
             <img 
-              :src="project.images[project.currentImageIndex].url" 
-              :alt="project.images[project.currentImageIndex].caption"
+              :key="`${project.id}-${project.currentImageIndex}`"
+              :src="getImageUrl(project.images[project.currentImageIndex].url)" 
+              :alt="project.images[project.currentImageIndex].caption || project.title"
               class="carousel-image"
             />
-            <span class="carousel-caption">
+            <span v-if="project.images[project.currentImageIndex].caption" class="carousel-caption">
               {{ project.images[project.currentImageIndex].caption }}
             </span>
           </div>
 
-          <!-- Contrôles du Carrousel (visibles uniquement s'il y a plus d'une image) -->
+          <!-- Contrôles du Carrousel -->
           <template v-if="project.images.length > 1">
-            <button @click="prevImage(project)" class="nav-btn prev-btn" aria-label="Précédent">
+            <button @click.stop="prevImage(project)" class="nav-btn prev-btn" aria-label="Précédent">
               <i class="fa-solid fa-chevron-left"></i>
             </button>
-            <button @click="nextImage(project)" class="nav-btn next-btn" aria-label="Suivant">
+            <button @click.stop="nextImage(project)" class="nav-btn next-btn" aria-label="Suivant">
               <i class="fa-solid fa-chevron-right"></i>
             </button>
 
-            <!-- Puces indicateurs -->
             <div class="carousel-dots">
               <span 
                 v-for="(img, idx) in project.images" 
                 :key="idx"
                 class="dot"
                 :class="{ active: idx === project.currentImageIndex }"
-                @click="setImage(project, idx)"
+                @click.stop="setImage(project, idx)"
               ></span>
             </div>
           </template>
@@ -236,7 +234,6 @@ const setImage = (project, index) => {
   padding: 60px 0;
 }
 
-/* Titre de section */
 .section-title {
   text-align: center;
   margin-bottom: 40px;
@@ -269,7 +266,6 @@ const setImage = (project, index) => {
   margin-right: auto;
 }
 
-/* Filtres */
 .filter-container {
   display: flex;
   justify-content: center;
@@ -302,14 +298,12 @@ const setImage = (project, index) => {
   font-weight: 600;
 }
 
-/* Grille */
 .projects-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
   gap: 30px;
 }
 
-/* Carte Projet */
 .project-card {
   background-color: rgba(30, 41, 59, 0.7);
   backdrop-filter: blur(10px);
@@ -328,7 +322,6 @@ const setImage = (project, index) => {
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
 }
 
-/* Styles du Carrousel */
 .carousel-container {
   position: relative;
   width: 100%;
@@ -362,7 +355,6 @@ const setImage = (project, index) => {
   font-weight: 500;
 }
 
-/* Navigation Flèches */
 .nav-btn {
   position: absolute;
   top: 50%;
@@ -393,7 +385,6 @@ const setImage = (project, index) => {
 .prev-btn { left: 8px; }
 .next-btn { right: 8px; }
 
-/* Indicateurs Puces */
 .carousel-dots {
   position: absolute;
   bottom: 6px;
@@ -434,7 +425,6 @@ const setImage = (project, index) => {
   font-weight: 600;
 }
 
-/* Contenu de la Carte */
 .card-content {
   padding: 20px;
   display: flex;
@@ -479,7 +469,6 @@ const setImage = (project, index) => {
   margin-bottom: 20px;
 }
 
-/* Footer Carte */
 .card-footer {
   display: flex;
   justify-content: space-between;
