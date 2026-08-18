@@ -120,17 +120,7 @@ const prevImage = (project) => {
 const setImage = (project, index) => {
   project.currentImageIndex = index
 }
-
-// Helper corrigé pour formater proprement le chemin public
-const getImageUrl = (path) => {
-  if (!path) return ''
-  const baseUrl = import.meta.env.BASE_URL || '/'
-  const cleanBase = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`
-  const cleanPath = path.startsWith('/') ? path.slice(1) : path
-  return `${cleanBase}${cleanPath}`
-}
 </script>
-
 <template>
   <section class="projects-section" id="projects">
     <div class="section-title">
@@ -166,7 +156,7 @@ const getImageUrl = (path) => {
           <div class="carousel-slide">
             <img 
               :key="`${project.id}-${project.currentImageIndex}`"
-              :src="getImageUrl(project.images[project.currentImageIndex].url)" 
+              :src="project.images[project.currentImageIndex].url" 
               :alt="project.images[project.currentImageIndex].caption || project.title"
               class="carousel-image"
             />
