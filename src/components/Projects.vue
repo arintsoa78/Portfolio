@@ -1,6 +1,17 @@
 <script setup>
 import { ref, computed } from 'vue'
 
+// Helper pour garantir la bonne résolution des URLs d'images sur Vite / Vercel
+const getImageUrl = (path) => {
+  // Si le chemin commence déjà par /, on le passe à la fonction dynamique
+  return new URL(`../public${path.startsWith('/') ? path : '/' + path}`, import.meta.url).href
+}
+
+// Fonction de fallback au cas où une image échoue à charger
+const handleImageError = (event) => {
+  event.target.src = 'https://via.placeholder.com/600x400/0f172a/38bdf8?text=Image+non+disponible'
+}
+
 const categories = ['Tous', 'Réseaux & Systèmes', 'Développement Web', 'Applications']
 const activeCategory = ref('Tous')
 
@@ -121,6 +132,7 @@ const setImage = (project, index) => {
   project.currentImageIndex = index
 }
 </script>
+
 <template>
   <section class="projects-section" id="projects">
     <div class="section-title">
@@ -156,9 +168,10 @@ const setImage = (project, index) => {
           <div class="carousel-slide">
             <img 
               :key="`${project.id}-${project.currentImageIndex}`"
-              :src="project.images[project.currentImageIndex].url" 
+              :src="getImageUrl(project.images[project.currentImageIndex].url)" 
               :alt="project.images[project.currentImageIndex].caption || project.title"
               class="carousel-image"
+              @error="handleImageError"
             />
             <span v-if="project.images[project.currentImageIndex].caption" class="carousel-caption">
               {{ project.images[project.currentImageIndex].caption }}
