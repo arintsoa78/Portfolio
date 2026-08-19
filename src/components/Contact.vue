@@ -22,22 +22,26 @@ const handleSubmit = async () => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Accept': 'application/json'
+        Accept: 'application/json'
       },
-      body: JSON.stringify(formData.value)
+      body: JSON.stringify({
+        name: formData.value.name,
+        email: formData.value.email,
+        subject: formData.value.subject,
+        message: formData.value.message
+      })
     })
 
     if (response.ok) {
       showSuccessMessage.value = true
       formData.value = { name: '', email: '', subject: '', message: '' }
-      
       setTimeout(() => {
         showSuccessMessage.value = false
       }, 6000)
     } else {
       showErrorMessage.value = true
     }
-  } catch (error) {
+  } catch {
     showErrorMessage.value = true
   } finally {
     isSubmitting.value = false
@@ -48,73 +52,87 @@ const contactInfo = [
   {
     icon: 'fa-solid fa-envelope',
     title: 'Email',
-    value: 'anaharintsoa@gmail.com', 
+    value: 'anaharintsoa@gmail.com',
     href: 'mailto:anaharintsoa@gmail.com'
   },
   {
     icon: 'fa-solid fa-phone',
     title: 'Téléphone',
+    value: '+261 38 74 084 05',
+    href: 'tel:+261387408405'
+  },
+  {
+    icon: 'fa-solid fa-mobile-screen',
+    title: 'Téléphone (2)',
     value: '+261 33 40 183 14',
     href: 'tel:+261334018314'
   },
   {
     icon: 'fa-solid fa-location-dot',
     title: 'Localisation',
-    value: 'Antananarivo',
+    value: 'Antananarivo / Fianarantsoa, Madagascar',
     href: null
   }
 ]
 
 const socialLinks = [
-  { icon: 'fa-brands fa-linkedin-in', href: 'https://linkedin.com', label: 'LinkedIn' },
   { icon: 'fa-brands fa-github', href: 'https://github.com/arintsoa78', label: 'GitHub' }
 ]
 </script>
 
 <template>
-  <section class="contact-section" id="contact">
-    <!-- En-tête de section -->
-    <div class="section-title">
-      <h2>Me <span>Contacter</span></h2>
-      <div class="underline"></div>
-      <p class="subtitle">
-        Vous cherchez une stagiaire motivée en Administration Systèmes & Réseaux ? N'hésitez pas à me laisser un message !
+  <div class="py-6">
+    <div class="mb-12 text-center">
+      <h2 class="text-[2.2rem] font-bold text-light">
+        Me <span class="text-neon">Contacter</span>
+      </h2>
+      <div class="mx-auto mt-2.5 h-1 w-15 rounded-sm bg-linear-to-r from-neon to-accent" />
+      <p class="mx-auto mt-4 max-w-xl text-[1.05rem] text-slate-400">
+        Vous cherchez une stagiaire motivée en Administration Systèmes &amp; Réseaux ? N'hésitez pas à me laisser un message !
       </p>
     </div>
 
-    <div class="contact-grid">
-      <!-- Colonne Informations de contact -->
-      <div class="contact-info-wrapper">
-        <h3>Restons en contact</h3>
-        <p class="info-desc">
+    <div class="grid items-start gap-12 lg:grid-cols-[1fr_1.2fr]">
+      <div>
+        <h3 class="mb-4 text-[1.6rem] text-light">Restons en contact</h3>
+        <p class="mb-8 leading-relaxed text-slate-300">
           Disponible pour un entretien ou des opportunités de stage. Je vous répondrai dans les meilleurs délais.
         </p>
 
-        <div class="info-cards">
-          <div v-for="(info, index) in contactInfo" :key="index" class="info-card">
-            <div class="icon-box">
-              <i :class="info.icon"></i>
+        <div class="mb-10 flex flex-col gap-5">
+          <div
+            v-for="info in contactInfo"
+            :key="info.title"
+            class="flex items-center gap-5 rounded-xl border border-white/5 bg-card/60 px-5 py-4"
+          >
+            <div class="flex h-12 w-12 items-center justify-center rounded-[10px] bg-neon/10">
+              <i :class="[info.icon, 'text-xl text-neon']"></i>
             </div>
-            <div class="info-details">
-              <span class="title">{{ info.title }}</span>
-              <a v-if="info.href" :href="info.href" class="value link">{{ info.value }}</a>
-              <span v-else class="value">{{ info.value }}</span>
+            <div class="flex flex-col">
+              <span class="text-xs tracking-wide text-slate-400 uppercase">{{ info.title }}</span>
+              <a
+                v-if="info.href"
+                :href="info.href"
+                class="font-medium text-light no-underline transition hover:text-neon"
+              >
+                {{ info.value }}
+              </a>
+              <span v-else class="font-medium text-light">{{ info.value }}</span>
             </div>
           </div>
         </div>
 
-        <!-- Réseaux sociaux -->
-        <div class="socials">
-          <h4>Suivez-moi</h4>
-          <div class="social-icons">
-            <a 
-              v-for="(social, index) in socialLinks" 
-              :key="index" 
-              :href="social.href" 
-              target="_blank" 
+        <div>
+          <h4 class="mb-4 text-[1.1rem] text-light">Suivez-moi</h4>
+          <div class="flex gap-4">
+            <a
+              v-for="social in socialLinks"
+              :key="social.label"
+              :href="social.href"
+              target="_blank"
               rel="noopener noreferrer"
               :aria-label="social.label"
-              class="social-btn"
+              class="flex h-11 w-11 items-center justify-center rounded-xl border border-white/8 bg-card/80 text-light no-underline transition hover:-translate-y-0.5 hover:bg-neon hover:text-navy"
             >
               <i :class="social.icon"></i>
             </a>
@@ -122,58 +140,65 @@ const socialLinks = [
         </div>
       </div>
 
-      <!-- Colonne Formulaire de contact -->
-      <div class="contact-form-wrapper">
-        <form @submit.prevent="handleSubmit" class="contact-form">
-          <div class="form-group">
-            <label for="name">Nom complet</label>
-            <input 
-              type="text" 
-              id="name" 
+      <div class="rounded-2xl border border-white/8 bg-card/70 p-6 shadow-[0_15px_35px_rgb(0_0_0_/_0.3)] backdrop-blur-md sm:p-9">
+        <form class="flex flex-col" @submit.prevent="handleSubmit">
+          <div class="mb-5 flex flex-col gap-2">
+            <label for="name" class="text-sm font-medium text-slate-300">Nom</label>
+            <input
+              id="name"
+              v-model="formData.name"
+              type="text"
               name="name"
-              v-model="formData.name" 
-              placeholder="Votre nom" 
-              required 
-            />
-          </div>
-
-          <div class="form-group">
-            <label for="email">Adresse Email</label>
-            <input 
-              type="email" 
-              id="email" 
-              name="email"
-              v-model="formData.email" 
-              placeholder="votre.email@example.com" 
-              required 
-            />
-          </div>
-
-          <div class="form-group">
-            <label for="subject">Sujet</label>
-            <input 
-              type="text" 
-              id="subject" 
-              name="subject"
-              v-model="formData.subject" 
-              placeholder="Objet de votre message" 
-              required 
-            />
-          </div>
-
-          <div class="form-group">
-            <label for="message">Message</label>
-            <textarea 
-              id="message" 
-              name="message"
-              v-model="formData.message" 
-              rows="5" 
-              placeholder="Votre message ici..." 
+              placeholder="Votre nom"
               required
-            ></textarea>
+              class="w-full rounded-[10px] border border-white/10 bg-navy/60 px-4 py-3 text-light outline-none transition focus:border-neon focus:shadow-[0_0_0_3px_rgb(56_189_248_/_0.15)]"
+            />
           </div>
 
-          <button type="submit" class="submit-btn" :disabled="isSubmitting">
+          <div class="mb-5 flex flex-col gap-2">
+            <label for="email" class="text-sm font-medium text-slate-300">Email</label>
+            <input
+              id="email"
+              v-model="formData.email"
+              type="email"
+              name="email"
+              placeholder="votre.email@example.com"
+              required
+              class="w-full rounded-[10px] border border-white/10 bg-navy/60 px-4 py-3 text-light outline-none transition focus:border-neon focus:shadow-[0_0_0_3px_rgb(56_189_248_/_0.15)]"
+            />
+          </div>
+
+          <div class="mb-5 flex flex-col gap-2">
+            <label for="subject" class="text-sm font-medium text-slate-300">Objet</label>
+            <input
+              id="subject"
+              v-model="formData.subject"
+              type="text"
+              name="subject"
+              placeholder="Objet de votre message"
+              required
+              class="w-full rounded-[10px] border border-white/10 bg-navy/60 px-4 py-3 text-light outline-none transition focus:border-neon focus:shadow-[0_0_0_3px_rgb(56_189_248_/_0.15)]"
+            />
+          </div>
+
+          <div class="mb-5 flex flex-col gap-2">
+            <label for="message" class="text-sm font-medium text-slate-300">Message</label>
+            <textarea
+              id="message"
+              v-model="formData.message"
+              name="message"
+              rows="5"
+              placeholder="Votre message ici..."
+              required
+              class="w-full rounded-[10px] border border-white/10 bg-navy/60 px-4 py-3 text-light outline-none transition focus:border-neon focus:shadow-[0_0_0_3px_rgb(56_189_248_/_0.15)]"
+            />
+          </div>
+
+          <button
+            type="submit"
+            class="flex w-full items-center justify-center gap-2.5 rounded-[10px] bg-linear-to-br from-blue-600 to-blue-700 px-4 py-3.5 font-semibold text-white transition hover:-translate-y-0.5 hover:shadow-[0_10px_25px_-5px_rgb(37_99_235_/_0.5)] disabled:cursor-not-allowed disabled:opacity-70"
+            :disabled="isSubmitting"
+          >
             <span v-if="!isSubmitting">
               <i class="fa-solid fa-paper-plane"></i> Envoyer le message
             </span>
@@ -182,293 +207,37 @@ const socialLinks = [
             </span>
           </button>
 
-          <!-- Notifications -->
-          <transition name="fade">
-            <div v-if="showSuccessMessage" class="success-alert">
+          <Transition
+            enter-active-class="transition-opacity duration-500"
+            leave-active-class="transition-opacity duration-500"
+            enter-from-class="opacity-0"
+            leave-to-class="opacity-0"
+          >
+            <div
+              v-if="showSuccessMessage"
+              class="mt-5 flex items-center gap-2.5 rounded-[10px] border border-green-500/40 bg-green-500/15 px-4 py-3 text-sm text-green-400"
+            >
               <i class="fa-solid fa-circle-check"></i>
               <span>Merci ! Votre message a été envoyé avec succès.</span>
             </div>
-          </transition>
+          </Transition>
 
-          <transition name="fade">
-            <div v-if="showErrorMessage" class="error-alert">
+          <Transition
+            enter-active-class="transition-opacity duration-500"
+            leave-active-class="transition-opacity duration-500"
+            enter-from-class="opacity-0"
+            leave-to-class="opacity-0"
+          >
+            <div
+              v-if="showErrorMessage"
+              class="mt-5 flex items-center gap-2.5 rounded-[10px] border border-red-500/40 bg-red-500/15 px-4 py-3 text-sm text-red-400"
+            >
               <i class="fa-solid fa-triangle-exclamation"></i>
-              <span>Une erreur s'est produite lors de l'envoi. Veuillez réespayer.</span>
+              <span>Une erreur s'est produite lors de l'envoi. Veuillez réessayer.</span>
             </div>
-          </transition>
+          </Transition>
         </form>
       </div>
     </div>
-  </section>
+  </div>
 </template>
-
-<style scoped>
-.contact-section {
-  padding: 60px 0;
-}
-
-/* Titre de section */
-.section-title {
-  text-align: center;
-  margin-bottom: 50px;
-}
-
-.section-title h2 {
-  font-size: 2.2rem;
-  font-weight: 700;
-  color: #f8fafc;
-}
-
-.section-title h2 span {
-  color: #38bdf8;
-}
-
-.underline {
-  width: 60px;
-  height: 4px;
-  background: linear-gradient(90deg, #38bdf8, #3b82f6);
-  margin: 10px auto 0;
-  border-radius: 2px;
-}
-
-.subtitle {
-  color: #94a3b8;
-  margin-top: 15px;
-  font-size: 1.05rem;
-  max-width: 600px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-/* Grille principale */
-.contact-grid {
-  display: grid;
-  grid-template-columns: 1fr 1.2fr;
-  gap: 50px;
-  align-items: start;
-}
-
-/* Colonne Infos */
-.contact-info-wrapper h3 {
-  font-size: 1.6rem;
-  color: #f8fafc;
-  margin-bottom: 15px;
-}
-
-.info-desc {
-  color: #cbd5e1;
-  line-height: 1.7;
-  margin-bottom: 30px;
-}
-
-.info-cards {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  margin-bottom: 40px;
-}
-
-.info-card {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  background-color: rgba(30, 41, 59, 0.6);
-  padding: 16px 20px;
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.icon-box {
-  width: 48px;
-  height: 48px;
-  background-color: rgba(56, 189, 248, 0.1);
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.icon-box i {
-  color: #38bdf8;
-  font-size: 1.2rem;
-}
-
-.info-details {
-  display: flex;
-  flex-direction: column;
-}
-
-.info-details .title {
-  font-size: 0.8rem;
-  color: #94a3b8;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.info-details .value {
-  color: #f8fafc;
-  font-weight: 500;
-  font-size: 1rem;
-}
-
-.info-details .link {
-  text-decoration: none;
-  transition: color 0.3s;
-}
-
-.info-details .link:hover {
-  color: #38bdf8;
-}
-
-/* Réseaux sociaux */
-.socials h4 {
-  color: #f8fafc;
-  font-size: 1.1rem;
-  margin-bottom: 15px;
-}
-
-.social-icons {
-  display: flex;
-  gap: 15px;
-}
-
-.social-btn {
-  width: 44px;
-  height: 44px;
-  border-radius: 10px;
-  background-color: rgba(30, 41, 59, 0.8);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  color: #f8fafc;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.1rem;
-  text-decoration: none;
-  transition: all 0.3s ease;
-}
-
-.social-btn:hover {
-  background-color: #38bdf8;
-  color: #0f172a;
-  transform: translateY(-3px);
-}
-
-/* Formulaire */
-.contact-form-wrapper {
-  background-color: rgba(30, 41, 59, 0.7);
-  backdrop-filter: blur(10px);
-  padding: 35px;
-  border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-bottom: 20px;
-}
-
-.form-group label {
-  color: #cbd5e1;
-  font-size: 0.9rem;
-  font-weight: 500;
-}
-
-.form-group input,
-.form-group textarea {
-  width: 100%;
-  padding: 12px 16px;
-  background-color: rgba(15, 23, 42, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
-  color: #f8fafc;
-  font-size: 0.95rem;
-  outline: none;
-  transition: border-color 0.3s, box-shadow 0.3s;
-}
-
-.form-group input:focus,
-.form-group textarea:focus {
-  border-color: #38bdf8;
-  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
-}
-
-.submit-btn {
-  width: 100%;
-  padding: 14px;
-  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-  color: #ffffff;
-  border: none;
-  border-radius: 10px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-}
-
-.submit-btn:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.5);
-}
-
-.submit-btn:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
-}
-
-/* Alertes */
-.success-alert {
-  margin-top: 20px;
-  padding: 12px 16px;
-  background-color: rgba(34, 197, 94, 0.15);
-  border: 1px solid rgba(34, 197, 94, 0.4);
-  color: #4ade80;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 0.9rem;
-}
-
-.error-alert {
-  margin-top: 20px;
-  padding: 12px 16px;
-  background-color: rgba(239, 68, 68, 0.15);
-  border: 1px solid rgba(239, 68, 68, 0.4);
-  color: #f87171;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 0.9rem;
-}
-
-/* Transition Vue */
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.5s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
-
-/* Responsive */
-@media (max-width: 968px) {
-  .contact-grid {
-    grid-template-columns: 1fr;
-    gap: 40px;
-  }
-
-  .contact-form-wrapper {
-    padding: 25px;
-  }
-}
-</style>

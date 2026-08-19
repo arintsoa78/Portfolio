@@ -5,9 +5,8 @@ import Hero from './components/Hero.vue'
 import About from './components/About.vue'
 import Skills from './components/Skills.vue'
 import Projects from './components/Projects.vue'
-import Contact from './components/Contact.vue' // Ton formulaire de contact est actuellement dans Hero.vue
+import Contact from './components/Contact.vue'
 
-// Gestion du bouton "Retour en haut"
 const showScrollTop = ref(false)
 
 const handleScroll = () => {
@@ -19,7 +18,7 @@ const scrollToTop = () => {
 }
 
 onMounted(() => {
-  window.addEventListener('scroll', handleScroll)
+  window.addEventListener('scroll', handleScroll, { passive: true })
 })
 
 onUnmounted(() => {
@@ -30,149 +29,52 @@ const currentYear = new Date().getFullYear()
 </script>
 
 <template>
-  <div class="app-container">
-    <!-- Navbar -->
+  <div class="flex min-h-screen flex-col bg-navy">
     <Navbar />
 
-    <!-- Main Content -->
-    <main class="main-content">
-      <!-- Section Accueil / Hero -->
-      <section id="hero" class="section-wrapper">
+    <main class="mx-auto w-full max-w-6xl flex-1 px-5 pb-10 pt-24">
+      <section id="hero" class="py-10">
         <Hero />
       </section>
 
-      <!-- Section À propos -->
-      <section id="about" class="section-wrapper">
+      <section id="about" class="py-10">
         <About />
       </section>
 
-      <!-- Section Compétences -->
-      <section id="skills" class="section-wrapper">
+      <section id="skills" class="py-10">
         <Skills />
       </section>
 
-      <!-- Section Projets -->
-      <section id="projects" class="section-wrapper">
+      <section id="projects" class="py-10">
         <Projects />
       </section>
-      <section id="contact" class="section-wrapper"><Contact /></section>
+
+      <section id="contact" class="py-10">
+        <Contact />
+      </section>
     </main>
 
-    <!-- Footer -->
-    <footer class="footer">
-      <div class="footer-content">
-        <p>&copy; {{ currentYear }} HARIMANANTSOA Tsiresy Espérencia — Tous droits réservés.</p>
-      </div>
+    <footer class="mt-16 border-t border-white/5 bg-navy/95 px-5 py-6 text-center">
+      <p class="text-sm text-slate-400">
+        &copy; {{ currentYear }} HARIMANANTSOA Tsiresy Espérencia — Tous droits réservés.
+      </p>
     </footer>
 
-    <!-- Bouton Scroll Top -->
-    <transition name="fade">
-      <button 
-        v-if="showScrollTop" 
-        @click="scrollToTop" 
-        class="scroll-top-btn" 
+    <Transition
+      enter-active-class="transition-opacity duration-300"
+      leave-active-class="transition-opacity duration-300"
+      enter-from-class="opacity-0"
+      leave-to-class="opacity-0"
+    >
+      <button
+        v-if="showScrollTop"
+        type="button"
+        class="fixed bottom-7 right-7 z-[99] flex h-11 w-11 items-center justify-center rounded-xl bg-neon text-navy shadow-[0_10px_25px_rgb(56_189_248_/_0.3)] transition hover:-translate-y-1 hover:bg-sky-300"
         aria-label="Retourner en haut"
+        @click="scrollToTop"
       >
         <i class="fa-solid fa-arrow-up"></i>
       </button>
-    </transition>
+    </Transition>
   </div>
 </template>
-
-<style>
-*, *::before, *::after {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-html {
-  scroll-behavior: smooth;
-  scroll-padding-top: 80px;
-}
-
-body {
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  background-color: #0f172a;
-  color: #f8fafc;
-  line-height: 1.6;
-  overflow-x: hidden;
-}
-
-.app-container {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
-
-.main-content {
-  flex: 1;
-  max-width: 1200px;
-  width: 100%;
-  margin: 0 auto;
-  padding: 80px 20px 40px;
-}
-
-.section-wrapper {
-  padding: 40px 0;
-}
-
-/* Footer */
-.footer {
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
-  background-color: rgba(15, 23, 42, 0.95);
-  padding: 25px 20px;
-  text-align: center;
-  margin-top: 60px;
-}
-
-.footer-content {
-  max-width: 1200px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  color: #94a3b8;
-  font-size: 0.9rem;
-}
-
-.heart-icon {
-  color: #ef4444;
-  margin: 0 3px;
-}
-
-/* Bouton Scroll Top */
-.scroll-top-btn {
-  position: fixed;
-  bottom: 30px;
-  right: 30px;
-  width: 45px;
-  height: 45px;
-  border-radius: 12px;
-  background-color: #38bdf8;
-  color: #0f172a;
-  border: none;
-  font-size: 1.1rem;
-  font-weight: bold;
-  cursor: pointer;
-  box-shadow: 0 10px 25px rgba(56, 189, 248, 0.3);
-  transition: all 0.3s ease;
-  z-index: 99;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.scroll-top-btn:hover {
-  transform: translateY(-5px);
-  background-color: #7dd3fc;
-}
-
-.fade-enter-active, .fade-leave-active {
-  transition: opacity 0.3s ease;
-}
-
-.fade-enter-from, .fade-leave-to {
-  opacity: 0;
-}
-</style>

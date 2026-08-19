@@ -1,17 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue'
 
-// Helper pour garantir la bonne résolution des URLs d'images sur Vite / Vercel
-const getImageUrl = (path) => {
-  // Si le chemin commence déjà par /, on le passe à la fonction dynamique
-  return new URL(`../public${path.startsWith('/') ? path : '/' + path}`, import.meta.url).href
-}
-
-// Fonction de fallback au cas où une image échoue à charger
-const handleImageError = (event) => {
-  event.target.src = 'https://via.placeholder.com/600x400/0f172a/38bdf8?text=Image+non+disponible'
-}
-
 const categories = ['Tous', 'Réseaux & Systèmes', 'Développement Web', 'Applications']
 const activeCategory = ref('Tous')
 
@@ -23,10 +12,9 @@ const projects = ref([
     description: 'Configuration de routeurs et commutateurs, mise en place du plan d’adressage IPv4, routage RIP/OSPF, tests de connectivité et dépannage réseau.',
     tags: ['GNS3', 'RIP', 'OSPF', 'IPv4', 'Switching'],
     icon: 'fa-solid fa-network-wired',
-    github: null,
     currentImageIndex: 0,
     images: [
-      { url: '/projects/R1.png', caption: 'Topologie Réseau sous GNS3' },
+      { url: '/projects/R1.png', caption: 'Topologie Réseau' },
       { url: '/projects/R2.png', caption: 'Tests de ping & Wireshark' }
     ]
   },
@@ -37,7 +25,6 @@ const projects = ref([
     description: 'Assistance à distance via TeamViewer et PsExec, exécution de commandes à distance, maintenance et optimisation de postes de travail.',
     tags: ['Windows', 'PsExec', 'TeamViewer', 'Maintenance'],
     icon: 'fa-solid fa-desktop',
-    github: null,
     currentImageIndex: 0,
     images: [
       { url: '/projects/T1.png', caption: 'Connexion à distance par TeamViewer' },
@@ -52,7 +39,6 @@ const projects = ref([
     description: 'Création, configuration et gestion de machines virtuelles (Linux/Windows) pour des environnements de test et de simulation.',
     tags: ['VMware', 'Virtualisation', 'Linux', 'Windows Server'],
     icon: 'fa-solid fa-server',
-    github: null,
     currentImageIndex: 0,
     images: [
       { url: '/projects/c1.png', caption: 'Infrastructure sous VMware Workstation' }
@@ -65,7 +51,6 @@ const projects = ref([
     description: 'Développement d’une application web de gestion d’un cabinet médical avec interface interactive et dynamique.',
     tags: ['Vue.js', 'React.js', 'JavaScript', 'HTML/CSS'],
     icon: 'fa-solid fa-heart-pulse',
-    github: null,
     currentImageIndex: 0,
     images: [
       { url: '/projects/M1.jpeg', caption: 'Dashboard principal du cabinet' },
@@ -81,7 +66,6 @@ const projects = ref([
     description: 'Conception d’une application web permettant la gestion des clients, des véhicules, des achats et la génération de factures.',
     tags: ['PHP', 'MySQL', 'HTML/CSS', 'DataTables'],
     icon: 'fa-solid fa-car',
-    github: null,
     currentImageIndex: 0,
     images: [
       { url: '/projects/gv1.png', caption: 'Login' },
@@ -100,7 +84,6 @@ const projects = ref([
     description: 'Application Desktop pour la gestion des clients, des avocats, des plannings, des consultations et le suivi des RDV.',
     tags: ['C#', '.NET', 'Base de données'],
     icon: 'fa-solid fa-scale-balanced',
-    github: null,
     currentImageIndex: 0,
     images: [
       { url: '/projects/A3.jpeg', caption: 'Login' },
@@ -111,16 +94,12 @@ const projects = ref([
 ])
 
 const filteredProjects = computed(() => {
-  if (activeCategory.value === 'Tous') {
-    return projects.value
-  }
-  return projects.value.filter(p => p.category === activeCategory.value)
+  if (activeCategory.value === 'Tous') return projects.value
+  return projects.value.filter((p) => p.category === activeCategory.value)
 })
 
-// Navigation du carrousel
 const nextImage = (project) => {
-  const total = project.images.length
-  project.currentImageIndex = (project.currentImageIndex + 1) % total
+  project.currentImageIndex = (project.currentImageIndex + 1) % project.images.length
 }
 
 const prevImage = (project) => {
@@ -134,379 +113,109 @@ const setImage = (project, index) => {
 </script>
 
 <template>
-  <section class="projects-section" id="projects">
-    <div class="section-title">
-      <h2>Projets <span>Académiques</span></h2>
-      <div class="underline"></div>
-      <p class="subtitle">
+  <div class="py-6">
+    <div class="mb-10 text-center">
+      <h2 class="text-[2.2rem] font-bold text-light">
+        Projets <span class="text-neon">Académiques</span>
+      </h2>
+      <div class="mx-auto mt-2.5 h-1 w-15 rounded-sm bg-linear-to-r from-neon to-accent" />
+      <p class="mx-auto mt-4 max-w-xl text-[1.05rem] text-slate-400">
         Projets et travaux pratiques réalisés durant mon parcours à l'École Nationale d'Informatique (ENI).
       </p>
     </div>
 
-    <!-- Boutons de Filtrage -->
-    <div class="filter-container">
-      <button 
-        v-for="cat in categories" 
+    <div class="mb-10 flex flex-wrap justify-center gap-3">
+      <button
+        v-for="cat in categories"
         :key="cat"
-        class="filter-btn"
-        :class="{ active: activeCategory === cat }"
+        type="button"
+        class="rounded-full border px-4.5 py-2 text-sm font-medium transition"
+        :class="activeCategory === cat
+          ? 'border-neon bg-neon font-semibold text-navy'
+          : 'border-white/8 bg-card/60 text-slate-400 hover:border-neon/40 hover:text-light'"
         @click="activeCategory = cat"
       >
         {{ cat }}
       </button>
     </div>
 
-    <!-- Grille des Projets -->
-    <div class="projects-grid">
-      <div 
-        v-for="project in filteredProjects" 
-        :key="project.id" 
-        class="project-card"
+    <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 xl:grid-cols-3">
+      <article
+        v-for="project in filteredProjects"
+        :key="project.id"
+        class="flex flex-col overflow-hidden rounded-2xl border border-white/8 bg-card/70 backdrop-blur-md transition hover:-translate-y-1 hover:border-neon/40 hover:shadow-[0_12px_30px_rgb(0_0_0_/_0.35)]"
       >
-        <!-- CARROUSEL D'IMAGES -->
-        <div class="carousel-container" v-if="project.images && project.images.length > 0">
-          <div class="carousel-slide">
-            <img 
-              :key="`${project.id}-${project.currentImageIndex}`"
-              :src="getImageUrl(project.images[project.currentImageIndex].url)" 
-              :alt="project.images[project.currentImageIndex].caption || project.title"
-              class="carousel-image"
-              @error="handleImageError"
-            />
-            <span v-if="project.images[project.currentImageIndex].caption" class="carousel-caption">
-              {{ project.images[project.currentImageIndex].caption }}
-            </span>
-          </div>
+        <div class="group relative h-50 overflow-hidden bg-navy">
+          <img
+            :src="project.images[project.currentImageIndex].url"
+            :alt="project.images[project.currentImageIndex].caption || project.title"
+            class="h-full w-full object-cover"
+          />
+          <span
+            v-if="project.images[project.currentImageIndex].caption"
+            class="absolute inset-x-0 bottom-0 bg-linear-to-t from-navy/95 to-transparent px-3 pt-6 pb-6 text-xs font-medium text-light"
+          >
+            {{ project.images[project.currentImageIndex].caption }}
+          </span>
 
-          <!-- Contrôles du Carrousel -->
           <template v-if="project.images.length > 1">
-            <button @click.stop="prevImage(project)" class="nav-btn prev-btn" aria-label="Précédent">
-              <i class="fa-solid fa-chevron-left"></i>
+            <button
+              type="button"
+              class="absolute top-1/2 left-2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full border border-white/10 bg-navy/75 text-light opacity-60 transition hover:bg-neon hover:text-navy group-hover:opacity-100"
+              aria-label="Image précédente"
+              @click.stop="prevImage(project)"
+            >
+              <i class="fa-solid fa-chevron-left text-xs"></i>
             </button>
-            <button @click.stop="nextImage(project)" class="nav-btn next-btn" aria-label="Suivant">
-              <i class="fa-solid fa-chevron-right"></i>
+            <button
+              type="button"
+              class="absolute top-1/2 right-2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full border border-white/10 bg-navy/75 text-light opacity-60 transition hover:bg-neon hover:text-navy group-hover:opacity-100"
+              aria-label="Image suivante"
+              @click.stop="nextImage(project)"
+            >
+              <i class="fa-solid fa-chevron-right text-xs"></i>
             </button>
 
-            <div class="carousel-dots">
-              <span 
-                v-for="(img, idx) in project.images" 
-                :key="idx"
-                class="dot"
-                :class="{ active: idx === project.currentImageIndex }"
+            <div class="absolute bottom-1.5 left-1/2 z-2 flex -translate-x-1/2 gap-1.5">
+              <button
+                v-for="(img, idx) in project.images"
+                :key="img.url"
+                type="button"
+                class="h-1.5 rounded-full transition"
+                :class="idx === project.currentImageIndex ? 'w-4 bg-neon' : 'w-1.5 bg-white/35'"
+                :aria-label="`Image ${idx + 1}`"
                 @click.stop="setImage(project, idx)"
-              ></span>
+              />
             </div>
           </template>
 
-          <span class="category-tag">{{ project.category }}</span>
+          <span class="absolute top-2.5 right-2.5 rounded-md border border-neon/30 bg-navy/85 px-2.5 py-1 text-[0.7rem] font-semibold tracking-wide text-neon uppercase">
+            {{ project.category }}
+          </span>
         </div>
 
-        <!-- EN-TÊTE & DÉTAILS DE LA CARTE -->
-        <div class="card-content">
-          <div class="card-header">
-            <div class="icon-box">
-              <i :class="project.icon"></i>
+        <div class="flex flex-1 flex-col justify-between p-5">
+          <div>
+            <div class="mb-3 flex items-center gap-3">
+              <div class="flex h-9.5 w-9.5 shrink-0 items-center justify-center rounded-[10px] bg-neon/10">
+                <i :class="[project.icon, 'text-neon']"></i>
+              </div>
+              <h3 class="text-[1.1rem] leading-snug text-light">{{ project.title }}</h3>
             </div>
-            <h3>{{ project.title }}</h3>
+            <p class="mb-5 text-sm leading-relaxed text-slate-300">{{ project.description }}</p>
           </div>
 
-          <p class="description">{{ project.description }}</p>
-
-          <div class="card-footer">
-            <div class="tags">
-              <span v-for="tag in project.tags" :key="tag" class="tag">
-                {{ tag }}
-              </span>
-            </div>
-
-            <div class="project-links" v-if="project.github">
-              <a :href="project.github" target="_blank" rel="noopener noreferrer" title="Voir sur GitHub">
-                <i class="fa-brands fa-github"></i>
-              </a>
-            </div>
+          <div class="flex flex-wrap gap-1.5">
+            <span
+              v-for="tag in project.tags"
+              :key="tag"
+              class="rounded px-2 py-0.5 text-[0.72rem] text-slate-400 bg-navy/60"
+            >
+              {{ tag }}
+            </span>
           </div>
         </div>
-
-      </div>
+      </article>
     </div>
-  </section>
+  </div>
 </template>
-
-<style scoped>
-.projects-section {
-  padding: 60px 0;
-}
-
-.section-title {
-  text-align: center;
-  margin-bottom: 40px;
-}
-
-.section-title h2 {
-  font-size: 2.2rem;
-  font-weight: 700;
-  color: #f8fafc;
-}
-
-.section-title h2 span {
-  color: #38bdf8;
-}
-
-.underline {
-  width: 60px;
-  height: 4px;
-  background: linear-gradient(90deg, #38bdf8, #3b82f6);
-  margin: 10px auto 0;
-  border-radius: 2px;
-}
-
-.subtitle {
-  color: #94a3b8;
-  margin-top: 15px;
-  font-size: 1.05rem;
-  max-width: 650px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.filter-container {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-  margin-bottom: 40px;
-  flex-wrap: wrap;
-}
-
-.filter-btn {
-  background-color: rgba(30, 41, 59, 0.6);
-  color: #94a3b8;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 8px 18px;
-  border-radius: 20px;
-  font-size: 0.9rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.filter-btn:hover {
-  color: #f8fafc;
-  border-color: rgba(56, 189, 248, 0.4);
-}
-
-.filter-btn.active {
-  background-color: #38bdf8;
-  color: #0f172a;
-  border-color: #38bdf8;
-  font-weight: 600;
-}
-
-.projects-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
-  gap: 30px;
-}
-
-.project-card {
-  background-color: rgba(30, 41, 59, 0.7);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 16px;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-.project-card:hover {
-  transform: translateY(-5px);
-  border-color: rgba(56, 189, 248, 0.4);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
-}
-
-.carousel-container {
-  position: relative;
-  width: 100%;
-  height: 200px;
-  background-color: #0f172a;
-  overflow: hidden;
-}
-
-.carousel-slide {
-  position: relative;
-  width: 100%;
-  height: 100%;
-}
-
-.carousel-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: opacity 0.3s ease;
-}
-
-.carousel-caption {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: linear-gradient(0deg, rgba(15, 23, 42, 0.95) 0%, rgba(15, 23, 42, 0) 100%);
-  color: #f8fafc;
-  padding: 10px 12px 22px;
-  font-size: 0.78rem;
-  font-weight: 500;
-}
-
-.nav-btn {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background-color: rgba(15, 23, 42, 0.75);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #f8fafc;
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  opacity: 0.6;
-}
-
-.carousel-container:hover .nav-btn {
-  opacity: 1;
-}
-
-.nav-btn:hover {
-  background-color: #38bdf8;
-  color: #0f172a;
-}
-
-.prev-btn { left: 8px; }
-.next-btn { right: 8px; }
-
-.carousel-dots {
-  position: absolute;
-  bottom: 6px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 5px;
-  z-index: 2;
-}
-
-.dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background-color: rgba(255, 255, 255, 0.35);
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.dot.active {
-  background-color: #38bdf8;
-  width: 16px;
-  border-radius: 10px;
-}
-
-.category-tag {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: #38bdf8;
-  background-color: rgba(15, 23, 42, 0.85);
-  border: 1px solid rgba(56, 189, 248, 0.3);
-  padding: 4px 10px;
-  border-radius: 6px;
-  font-weight: 600;
-}
-
-.card-content {
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  flex-grow: 1;
-}
-
-.card-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 12px;
-}
-
-.icon-box {
-  width: 38px;
-  height: 38px;
-  background-color: rgba(56, 189, 248, 0.1);
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.icon-box i {
-  color: #38bdf8;
-  font-size: 1.1rem;
-}
-
-.card-header h3 {
-  font-size: 1.1rem;
-  color: #f8fafc;
-  line-height: 1.3;
-}
-
-.description {
-  color: #cbd5e1;
-  font-size: 0.88rem;
-  line-height: 1.55;
-  margin-bottom: 20px;
-}
-
-.card-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  gap: 10px;
-  margin-top: auto;
-}
-
-.tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.tag {
-  font-size: 0.72rem;
-  color: #94a3b8;
-  background-color: rgba(15, 23, 42, 0.6);
-  padding: 3px 8px;
-  border-radius: 4px;
-}
-
-.project-links a {
-  color: #cbd5e1;
-  font-size: 1.2rem;
-  transition: color 0.3s ease;
-}
-
-.project-links a:hover {
-  color: #38bdf8;
-}
-
-@media (max-width: 640px) {
-  .projects-grid {
-    grid-template-columns: 1fr;
-  }
-}
-</style>
